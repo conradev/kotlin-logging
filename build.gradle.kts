@@ -3,10 +3,9 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 plugins {
-    kotlin("multiplatform") version "1.6.0"
+    kotlin("multiplatform")
     id("org.jetbrains.dokka") version "1.6.0"
     `maven-publish`
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     signing
     id("io.gitlab.arturbosch.detekt") version "1.18.0"
 }
@@ -20,14 +19,6 @@ repositories {
     mavenCentral()
 }
 
-nexusPublishing {
-    repositories {
-        sonatype()
-    }
-}
-
-apply(plugin = "io.github.gradle-nexus.publish-plugin")
-
 kotlin {
     explicitApi()
     jvm {
@@ -39,16 +30,6 @@ kotlin {
                 jvmTarget = "1.8"
             }
         }
-    }
-    js(BOTH) {
-        browser {
-            testTask {
-                useKarma {
-                    useChromeHeadless()
-                }
-            }
-        }
-        nodejs()
     }
 
     val linuxTargets = listOf(
@@ -92,12 +73,6 @@ kotlin {
                 implementation("org.apache.logging.log4j:log4j-api:${extra["log4j_version"]}")
                 implementation("org.apache.logging.log4j:log4j-core:${extra["log4j_version"]}")
                 implementation("org.apache.logging.log4j:log4j-slf4j-impl:${extra["log4j_version"]}")
-            }
-        }
-        val jsMain by getting {}
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
             }
         }
         val nativeMain by creating {
